@@ -1,0 +1,31 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+    cf_api_token: 'CF API token under My Profile.. API key'
+    cf_email: 'Cloud Flare email address'
+
+  tasks:
+  - name: get current IP geolocation data
+    ipinfoio_facts:
+      timeout: 5
+    register: ipdata
+
+#  - debug:
+#     var: ipdata.ansible_facts.ip
+
+  - name: Update mail A record 
+    cloudflare_dns:
+      zone: '{{ item }}'
+      record: mail
+      type: A
+      value: '{{ ipdata.ansible_facts.ip }}' 
+      account_email: '{{ cf_email }}'
+      account_api_token: '{{ cf_api_token }}'
+    register: record
+    with_items:
+      - domain1
+      - domain2
+
+# - debug:
+#     var: record
