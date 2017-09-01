@@ -22,6 +22,8 @@
       value: '{{ ipdata.ansible_facts.ip }}' 
       account_email: '{{ cf_email }}'
       account_api_token: '{{ cf_api_token }}'
+      state: present
+      solo: yes
     register: record
     with_items:
       - domain1
